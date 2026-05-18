@@ -1,35 +1,41 @@
 pipeline {
-
     agent any
 
     stages {
 
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
                 git branch: 'main',
                 url: 'https://github.com/riyasingh2119/Blue-Green_Devops_Project.git'
             }
         }
 
-        stage('Project Structure Check') {
+        stage('Build Green Environment') {
             steps {
-                sh 'ls'
+                sh 'docker-compose -f docker/docker-compose.green.yml up -d --build'
             }
         }
 
-        stage('Docker Files Verification') {
+        stage('Health Check Green') {
             steps {
-                sh 'test -f docker-compose.yml'
-                sh 'test -f backend/Dockerfile'
-                sh 'test -f frontend/Dockerfile'
+                sh '''
+                echo "Checking Green environment..."
+                sleep 10
+                curl -f http://localhost:3001 || exit 1
+                '''
             }
         }
 
-        stage('Pipeline Success') {
+        stage('Switch Traffic to Green') {
             steps {
-                echo 'CI/CD Pipeline Executed Successfully'
+                sh 'bash scripts/switch.sh green'
             }
         }
 
+        stage('Cleanup Blue (optional)') {
+            steps {
+                sh 'echo "Blue can be stopped after validation (optional step)"'
+            }
+        }
     }
 }
