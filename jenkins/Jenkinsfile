@@ -1,41 +1,6 @@
-pipeline {
-    agent any
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/riyasingh2119/Blue-Green_Devops_Project.git'
-            }
-        }
-
-        stage('Build Green Environment') {
-            steps {
-                sh 'docker-compose -f docker/docker-compose.green.yml up -d --build'
-            }
-        }
-
-        stage('Health Check Green') {
-            steps {
-                sh '''
-                echo "Checking Green environment..."
-                sleep 10
-                curl -f http://localhost:3001 || exit 1
-                '''
-            }
-        }
-
-        stage('Switch Traffic to Green') {
-            steps {
-                sh 'bash scripts/switch.sh green'
-            }
-        }
-
-        stage('Cleanup Blue (optional)') {
-            steps {
-                sh 'echo "Blue can be stopped after validation (optional step)"'
-            }
-        }
+stage('Build Containers') {
+    steps {
+        sh 'docker compose -f docker/docker-compose.blue.yml up -d --build'
+        sh 'docker compose -f docker/docker-compose.green.yml up -d --build'
     }
 }
