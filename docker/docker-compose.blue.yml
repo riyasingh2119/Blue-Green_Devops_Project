@@ -1,0 +1,21 @@
+services:
+
+  backend-blue:
+    build: ../backend
+    container_name: backend-blue
+    ports:
+      - "5000:5000"
+
+  frontend-blue:
+    build: ../frontend
+    container_name: frontend-blue
+    ports:
+      - "3000:3000"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.blue.conf:/etc/nginx/nginx.conf

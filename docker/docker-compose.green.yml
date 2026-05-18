@@ -1,0 +1,21 @@
+services:
+
+  backend-green:
+    build: ../backend
+    container_name: backend-green
+    ports:
+      - "5001:5000"
+
+  frontend-green:
+    build: ../frontend
+    container_name: frontend-green
+    ports:
+      - "3001:3000"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.green.conf:/etc/nginx/nginx.conf
