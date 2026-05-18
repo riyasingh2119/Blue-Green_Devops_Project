@@ -1,0 +1,26 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/riyasingh2119/Blue-Green_Devops_Project.git'
+            }
+        }
+
+        stage('Build Docker Containers') {
+            steps {
+                bat 'docker-compose up --build -d'
+            }
+        }
+
+        stage('Check Running Containers') {
+            steps {
+                bat 'docker ps'
+            }
+        }
+
+    }
+}
