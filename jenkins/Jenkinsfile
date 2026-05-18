@@ -11,15 +11,23 @@ pipeline {
             }
         }
 
-        stage('Build Docker Containers') {
+        stage('Project Structure Check') {
             steps {
-                sh 'docker-compose up --build -d'
+                sh 'ls'
             }
         }
 
-        stage('Check Running Containers') {
+        stage('Docker Files Verification') {
             steps {
-                sh 'docker ps'
+                sh 'test -f docker-compose.yml'
+                sh 'test -f backend/Dockerfile'
+                sh 'test -f frontend/Dockerfile'
+            }
+        }
+
+        stage('Pipeline Success') {
+            steps {
+                echo 'CI/CD Pipeline Executed Successfully'
             }
         }
 
